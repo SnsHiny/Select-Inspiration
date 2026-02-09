@@ -1,0 +1,46 @@
+
+import { GoogleGenAI, Type } from "@google/genai";
+import { AIRecommendation } from "../types";
+
+export const getAIRecommendation = async (
+  context: string,
+  options: string[]
+): Promise<AIRecommendation> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: `请基于以下背景信息，从给出的选项中为我做出最佳选择并说明理由。
+    
+    背景信息：${context}
+    备选项：${options.join(', ')}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          choice: { type: Type.STRING, description: "最终推荐的选项" },
+          reason: { type: Type.STRING, description: "推荐的核心理由" },
+          pros: { 
+            type: Type.ARRAY, 
+            items: { type: Type.STRING },
+            description: "该选择的优点列表"
+          },
+          cons: { 
+            type: Type.ARRAY, 
+            items: { type: Type.STRING },
+            description: "潜在的不足或需要注意的地方"
+          }
+        },
+        required: ["choice", "reason", "pros", "cons"]
+      }
+    }
+  });
+
+  try {
+    return JSON.parse(response.text.trim()) as AIRecommendation;
+  } catch (error) {
+    console.error("Failed to parse AI response:", error);
+    throw new Error("AI 思考过程中出了点小岔子，请稍后再试。");
+  }
+};
