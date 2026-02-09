@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { DecisionOption, AIRecommendation, AppMode } from './types';
-import { getAIRecommendation } from './services/geminiService';
+import { getAIRecommendation } from './services/geminiService.ts';
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.RANDOM);
