@@ -1,10 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIRecommendation } from "../types";
 
-export const getAIRecommendation = async (
-  context: string,
-  options: string[]
-): Promise<AIRecommendation> => {
+export const getAIRecommendation = async ( context: string, options: string[] ): Promise<AIRecommendation> => {
   const apiKey = import.meta.env.snhi_gemini_api_key || '';
   
   if (!apiKey) {
