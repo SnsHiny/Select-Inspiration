@@ -2,13 +2,13 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { AIRecommendation } from "../types";
 
 export const getAIRecommendation = async ( context: string, options: string[] ): Promise<AIRecommendation> => {
-  const apiKey = import.meta.env.snhi_gemini_api_key || '';
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
   
   if (!apiKey) {
     throw new Error("Gemini API key is not configured");
   }
   
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI(apiKey);
   
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
